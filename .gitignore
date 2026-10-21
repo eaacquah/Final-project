@@ -1,0 +1,11 @@
+data/
+results/
+logs/
+*.fastq
+*.fastq.gz
+*.bam
+*.sam
+*.cram
+*.h5
+.Rhistory
+.RData
