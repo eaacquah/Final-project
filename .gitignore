@@ -6,6 +6,7 @@ logs/
 *.bam
 *.sam
 *.cram
-*.h5
-.Rhistory
-.RData
+*.fq
+*.fq.gz
+*.Rhistory
+*.RData
