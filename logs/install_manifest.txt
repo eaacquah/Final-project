@@ -1,0 +1,7 @@
+Environment info:
+Date: Wed Oct 21 02:39:57 PM CDT 2026
+Hostname: compute-2-40
+Modules loaded.
+Genome + GTF downloaded.
+Genome + GTF downloaded.
+Modules loaded.

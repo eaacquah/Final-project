@@ -1,12 +1,35 @@
-data/
-results/
-logs/
+# Sequencing data
 *.fastq
 *.fastq.gz
-*.bam
-*.sam
-*.cram
 *.fq
 *.fq.gz
-*.Rhistory
-*.RData
+*.sra
+
+# Genome reference files
+*.fa
+*.fa.gz
+*.fasta
+*.fasta.gz
+*.fna
+*.fna.gz
+*.gtf
+*.gtf.gz
+*.gff
+*.gff3
+
+# STAR genome index
+STAR_index/
+indexed_genome/
+Genome
+SA
+SAindex
+
+# Large analysis outputs
+*.bam
+*.sam
+*.bai
+
+# Temporary files
+*.tmp
+*.log
+slurm-*.out
