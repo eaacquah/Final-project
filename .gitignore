@@ -1,35 +1,32 @@
-# Sequencing data
+# Raw sequencing files
 *.fastq
 *.fastq.gz
-*.fq
-*.fq.gz
 *.sra
 
-# Genome reference files
+# Genome references
 *.fa
-*.fa.gz
 *.fasta
-*.fasta.gz
-*.fna
-*.fna.gz
 *.gtf
-*.gtf.gz
 *.gff
-*.gff3
+*.fai
+3M-february-2018.txt
 
 # STAR genome index
-STAR_index/
-indexed_genome/
-Genome
-SA
-SAindex
+references/STAR_index/
 
-# Large analysis outputs
+# Generated sequencing results
+results/
+
+# Alignment files
 *.bam
-*.sam
 *.bai
+*.sam
 
-# Temporary files
-*.tmp
-*.log
+# SLURM logs
 slurm-*.out
+*.err
+
+# R temporary files
+.Rhistory
+.RData
+.Rproj.user/
