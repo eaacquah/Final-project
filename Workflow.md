@@ -1,21 +1,24 @@
 # Final Project Workflow
-Author: Eldrick Acquah  
+Author: Eldrick Acquah 
 Project: Transcriptomic changes in the P23H Zebrafish model of Retinitis Pigmentosa 
 
 
-# Overview
-This workflow describes the complete computational pipeline used to process, analyze, and interpret single‑cell RNA‑seq data from WT and P23H zebrafish samples. The workflow is fully reproducible, modular, and tracked through GitHub. It consists of three main scripts:
+## Overview
+This workflow describes the complete computational pipeline used to process, analyze, and interpret single‑cell RNA‑seq data from WT and P23H zebrafish samples. The workflow consists of four main scripts:
 
-1. install_and_download.sh  
+1. install_and_download.sh 
    Downloads all required datasets, reference genome files, and raw FASTQ reads.
 
-2. qc_trim_map.sh
+2. cell_barcode_whitelist_matching.sh
+   Performs sequence read structure and barcode whitelist matching compatibility checks
+
+3. qc_index_map.sh
    Performs quality control, read trimming, genome indexing, and alignment.
 
-3. analysis.R  
+4. analysis.R 
    Conducts differential gene expression analysis using DESeq2 (pseudo‑bulk) or Seurat (single‑cell).
 
-Scripts 1 and 2 will run on the Sabine HPC cluster using SLURM job submission, whiles script 3 (analysis.R) will run on RStudio.
+Scripts 1 to 3 will run on the Sabine HPC cluster using SLURM job submission, whiles script 3 (analysis.R) will run on RStudio
 
 
 # Repository Structure
@@ -23,7 +26,7 @@ Scripts 1 and 2 will run on the Sabine HPC cluster using SLURM job submission, w
 Final-project/
 ├── README.md
 ├── .gitignore
-├── workflow.md
+├── Workflow.md
 ├── config/
 │   └── samples.tsv
 ├── scripts/
@@ -74,10 +77,6 @@ Runs FastQC on all raw FASTQ files and stores reports in "results/fastqc/".
 # MultiQC
 Aggregates FastQC results into a single HTML report in "results/multiqc/".
 
-# fastp Trimming
-Performs adapter trimming and quality filtering for paired‑end reads.  
-Outputs trimmed reads to "results/trimmed/".
-
 # STAR Genome Indexing
 Builds a STAR index using:
 - "references/GRCz12.fa"
@@ -96,28 +95,9 @@ This step produces the count tables needed for downstream differential expressio
 
 
 # 3. Differential Expression Analysis
-Script: "scripts/analysis.R"
+Script: "scripts/analysis.R
 
-Two analysis modes are supported:
-
-# A. DESeq2 (Pseudo‑Bulk)
-Uses STAR’s `ReadsPerGene.out.tab` files.
-
-Workflow:
-
-1. Load count tables 
-2. Build a DESeq2 dataset 
-3. Model WT vs P23H differences 
-4. Generate differential expression results 
-5. Save results to "results/DESeq2_results_P23H_vs_WT.csv"
-
-This mode is appropriate when aggregating counts per sample.
-
----
-
-# B. Seurat (Single‑Cell)
-Optional workflow for cell‑level analysis:
-
+Seurat-based  workflow for cell‑level analysis:
 1. Load cell‑by‑gene matrices (Cell Ranger or STARsolo) 
 2. Perform QC filtering 
 3. Normalize (SCTransform or LogNormalize) 
@@ -130,7 +110,7 @@ This mode is appropriate for true single‑cell datasets.
 
 
 # SLURM Usage
-The first two scripts will be submitted to Sabine using:
+The first three scripts will be submitted to Sabine using:
 
 ```bash
 sbatch scripts/install_and_download.sh
@@ -163,3 +143,70 @@ This workflow ensures reproducibility through:
 - All scripts are designed to be portable and cluster‑friendly.  
 - The workflow supports both bulk‑style and single‑cell analysis paths.
 
+
+
+## Detailed scRNA-Seq Processing Workflow
+1. Data Acquisition and Subsampling
+Three SRA accessions were selected for the comparison of WT and P23H transgenic zebrafish retinas:
+- WT: SRR24874370
+- P23H: SRR24874372
+- P23H: SRR24874373
+SRA Toolkit was used to obtain FASTQ reads. A subset of 10 million sequencing spots per accession was prepared and used. 
+The FASTQ files were stored under data/WT/ and data/P23H/.
+
+2. FASTQ Structure and Barcode Validation
+The _2.fastq files were assigned as barcode/UMI reads.
+The _3.fastq files were assigned as cDNA reads.
+The expected 10x Chromium 3' v3 layout was used:
+- Cell barcode: bases 1–16
+- UMI: bases 17–28
+- Whitelist: 3M-february-2018.txt
+Barcode-whitelist matching was checked on a read subset. The read pairing and counts were also checked before mapping.
+
+3. Read Quality Assessment
+FastQC was run separately on barcode/UMI and cDNA FASTQ files. Quality reports were directed to each sample's fastqc/ folder.
+Barcode/UMI positions were preserved for STARsolo processing.
+
+4. Genome Reference and Indexing
+The following files were present in references/:
+- GRCz12ab.fa
+- GRCz12ab.gtf
+- 3M-february-2018.txt
+STAR v2.7.11b was configured to generate a genome index using the GRCz12ab FASTA and GTF files. The indexing command used
+eight threads and --sjdbOverhang 149.
+Index generation occured once for all samples.
+
+5. STARsolo Alignment and UMI Counting
+STARsolo was configured with these settings:
+--soloType CB_UMI_Simple
+--soloCBstart 1
+--soloCBlen 16
+--soloUMIstart 17
+--soloUMIlen 12
+--soloBarcodeReadLength 0
+--soloCBwhitelist references/3M-february-2018.txt
+--soloFeatures Gene
+--soloCellFilter EmptyDrops_CR
+--soloUMIdedup 1MM_CR
+--soloCBmatchWLtype 1MM_multi_Nbase_pseudocounts
+--outSAMtype None
+
+The cDNA FASTQ was supplied before the barcode/UMI FASTQ in --readFilesIn. The --outSAMtype None option disabled BAM
+output. STARsolo produced UMI count matrices.
+
+Output for each sample:
+STARsolo/Solo.out/Gene/
+├── raw/
+│   ├── matrix.mtx
+│   ├── features.tsv
+│   └── barcodes.tsv
+└── filtered/
+    ├── matrix.mtx
+    ├── features.tsv
+    └── barcodes.tsv
+
+The filtered/ directory was the input for Seurat.
+
+6. Downstream Seurat Analysis
+Seurat was selected for downstream processing in R. The analysis included cell-level QC, normalization, dimensionality reduction, clustering, retinal cell-type annotation, and WT-versus-P23H expression comparisons within cell populations.
+Microglia, rods, cones, and Müller glia were priority cell types.
