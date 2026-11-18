@@ -16,38 +16,10 @@ This workflow describes the complete computational pipeline used to process, ana
    Performs quality control, read trimming, genome indexing, and alignment.
 
 4. analysis.R 
-   Conducts differential gene expression analysis using DESeq2 (pseudo‑bulk) or Seurat (single‑cell).
+   Conducts differential gene expression analysis using Seurat (single‑cell).
 
 Scripts 1 to 3 will run on the Sabine HPC cluster using SLURM job submission, whiles script 3 (analysis.R) will run on RStudio
 
-
-# Repository Structure
-```
-Final-project/
-├── README.md
-├── .gitignore
-├── Workflow.md
-├── config/
-│   └── samples.tsv
-├── scripts/
-│   ├── install_and_download.sh
-│   ├── qc_trim_map.sh
-│   └── analysis.R
-├── references/
-│   ├── GRCz12.fa
-│   └── GRCz12.gtf
-├── data/
-│   └── raw/               # FASTQ files (ignored by Git)
-├── results/
-│   ├── fastqc/
-│   ├── multiqc/
-│   ├── trimmed/
-│   ├── alignments/
-│   └── counts/
-└── logs/
-```
-
-Large files (FASTQ, BAM, STAR index, MultiQC reports) are excluded from version control using `.gitignore`.
 
 
 ## Pipeline Summary
@@ -57,25 +29,30 @@ Script: "scripts/install_and_download.sh"
 
 This script:
 - Loads required modules on Sabine  
-- Downloads the GRCz12 zebrafish genome and GTF annotation from NCBI/Ensembl
-- Downloads raw FASTQ files from GEO/SRA using "prefetch" + "fasterq-dump"  
+- Downloads the GRCz12ab zebrafish genome and GTF annotation from NCBI/Ensembl
+- Downloads subsampled raw FASTQ files from GEO/SRA using "prefetch" + "fastq-dump"  
 - Stores all raw data in "data/raw/"  
 - Logs all actions to "logs/install_manifest.txt"
 
 This step ensures the project has all necessary inputs before processing.
 
 
+# 2. Cell barcode whitelist matching 
+Script: "scripts/cell_barcode_whitelist_matching.sh"
 
-# 2. Quality Control, Trimming, and Alignment
-Script: "scripts/q_trim_map.sh"
+This script downloads the 10x Genomics v3 cell barcode whitelist and checks barcode compatibility across the WT and P23H 
+FASTQ files. Using Python, it extracts the first 16 nucleotides from the first 100,000 reads of each FASTQ file and compares
+ them against known valid cell barcodes. It calculates the percentage of matching barcodes to help identify the barcode-
+containing reads and verify compatibility with the 10x Genomics chemistry before STARsolo alignment.
+
+
+# 3. Quality Control, Indexing, and Alignment
+Script: "scripts/qc_index__map.sh"
 
 This script performs:
 
 # FastQC
 Runs FastQC on all raw FASTQ files and stores reports in "results/fastqc/".
-
-# MultiQC
-Aggregates FastQC results into a single HTML report in "results/multiqc/".
 
 # STAR Genome Indexing
 Builds a STAR index using:
@@ -94,7 +71,7 @@ This step produces the count tables needed for downstream differential expressio
 
 
 
-# 3. Differential Expression Analysis
+# 4. Differential Gene Expression and Pathway Analyses
 Script: "scripts/analysis.R
 
 Seurat-based  workflow for cell‑level analysis:
@@ -208,5 +185,6 @@ STARsolo/Solo.out/Gene/
 The filtered/ directory was the input for Seurat.
 
 6. Downstream Seurat Analysis
-Seurat was selected for downstream processing in R. The analysis included cell-level QC, normalization, dimensionality reduction, clustering, retinal cell-type annotation, and WT-versus-P23H expression comparisons within cell populations.
-Microglia, rods, cones, and Müller glia were priority cell types.
+Seurat was selected for downstream processing in R. The analysis included cell-level QC, normalization, dimensionality 
+reduction, clustering, retinal cell-type annotation, and WT-versus-P23H expression comparisons within cell populations.
+

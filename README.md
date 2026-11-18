@@ -13,7 +13,8 @@ SRR24874372	P23H
 SRR24874373	P23H
 
 The reads were were obtained with the 10x Genomics Chromium 3' v3 platform and treated as such.
-A subset of 10 million sequencing spots per accession was extracted and used for the analysis due to the large size of the complete dataset. 
+A subset of 10 million sequencing spots per accession was extracted and used for the analysis due to the large size of the 
+complete dataset. 
 The GRCz12ab zebrafish genome and matching GTF annotation were used as references.
 
 ## Workflow
@@ -25,9 +26,4 @@ The GRCz12ab zebrafish genome and matching GTF annotation were used as reference
 6. Seurat was selected for downstream single-cell analysis.
 
 See [Workflow.md](Workflow.md) for commands, expected outputs, and the status of each stage.
-
-## Software and Computing Environment
-The pipeline was developed using the University of Houston Sabine HPC cluster with SLURM. Tools included SRA Toolkit, FastQC,
-STAR/STARsolo v2.7.11b, and R with Seurat.
-
 
