@@ -1,0 +1,2 @@
+"category","subcategory","ID","Description","GeneRatio","BgRatio","RichFactor","FoldEnrichment","zScore","pvalue","p.adjust","qvalue","geneID","Count"
+"Organismal Systems","Sensory system","dre04744","Phototransduction","2/2","10/583",0.2,58.3,10.7143476762408,0.00026524729889834,0.0013262364944917,0.00111683073220354,"30295/335656",2

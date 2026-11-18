@@ -1,0 +1,2 @@
+"category","subcategory","ID","Description","GeneRatio","BgRatio","RichFactor","FoldEnrichment","zScore","pvalue","p.adjust","qvalue","geneID","Count"
+"Organismal Systems","Endocrine system","dre03320","PPAR signaling pathway","3/8","17/1020",0.176470588235294,22.5,7.94427525615026,0.000205015306559046,0.00205015306559046,0.00194225027266465,"553579/791610/393831",3

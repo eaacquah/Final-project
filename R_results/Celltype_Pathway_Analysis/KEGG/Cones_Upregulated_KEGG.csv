@@ -1,0 +1,2 @@
+"category","subcategory","ID","Description","GeneRatio","BgRatio","RichFactor","FoldEnrichment","zScore","pvalue","p.adjust","qvalue","geneID","Count"
+"Environmental Information Processing","Signal transduction","dre04010","MAPK signaling pathway","10/57","21/317",0.476190476190476,2.64828738512949,3.65418913378422,0.00118177156636083,0.0330896038581033,0.0286113116066307,"30671/402991/100126123/568225/405817/100535101/447814/394198/406304/335916",10

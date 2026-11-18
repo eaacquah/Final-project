@@ -1,0 +1,5 @@
+"category","subcategory","ID","Description","GeneRatio","BgRatio","RichFactor","FoldEnrichment","zScore","pvalue","p.adjust","qvalue","geneID","Count"
+"Cellular Processes","Cell motility","dre04814","Motor proteins","2/6","10/360",0.2,12,4.58648398570077,0.00983682863558408,0.0497389685751539,0.0336579486598786,"767746/57934",2
+"Metabolism","Global and overview maps","dre01230","Biosynthesis of amino acids","2/6","11/360",0.181818181818182,10.9090909090909,4.33948968466432,0.0119324120670431,0.0497389685751539,0.0336579486598786,"386951/322614",2
+"Cellular Processes","Cell growth and death","dre04210","Apoptosis","2/6","11/360",0.181818181818182,10.9090909090909,4.33948968466432,0.0119324120670431,0.0497389685751539,0.0336579486598786,"406304/57934",2
+"Environmental Information Processing","Signaling molecules and interaction","dre04517","IgSF CAM signaling","2/6","12/360",0.166666666666667,10,4.12253858341101,0.0142111338786154,0.0497389685751539,0.0336579486598786,"767746/57934",2
