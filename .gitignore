@@ -10,6 +10,7 @@
 *.gff
 *.fai
 *.txt
+3M-february-2018.txt
 
 # STAR genome index
 references/STAR_index/
