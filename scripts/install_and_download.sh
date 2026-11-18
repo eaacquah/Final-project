@@ -74,12 +74,7 @@ echo "Downloading WT samples..."
 for SRR in "${WT_ACCESSIONS[@]}"; do
     echo "Processing $SRR..."
 
-    fastq-dump \
-        --split-files \
-        --skip-technical \
-        -X 10000000 \
-        "$SRR" \
-        --outdir "$RAW/WT"
+    fastq-dump --split-files --skip-technical -X 10000000 "$SRR" --outdir "$RAW/WT"
 
 done
 
